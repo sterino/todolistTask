@@ -9,18 +9,23 @@ import (
 	"todoList/internal/config"
 )
 
-func ConnectDatabase(cfg config.Config) (store *sqlx.DB, err error) {
+type SQLX struct {
+	Client *sqlx.DB
+}
+
+func NewSQL(cfg config.Config) (store SQLX, err error) {
 	psqlUrl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
 
 	log.Printf("url: %v", psqlUrl)
 
-	store, err = sqlx.Connect("postgres", psqlUrl)
+	store.Client, err = sqlx.Connect("postgres", psqlUrl)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 		return
 	}
 	log.Printf("Connected to database with URL: %s", psqlUrl)
+
 	return
 
 }

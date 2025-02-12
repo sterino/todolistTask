@@ -2,6 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"todoList/internal/handler/http"
+	"todoList/internal/service/task"
 	"todoList/pkg/server/router"
 )
 
@@ -11,7 +13,6 @@ type Dependencies struct {
 
 type Configuration func(h *Handler) error
 
-// Handler is an implementation of the Handler
 type Handler struct {
 	dependencies Dependencies
 
@@ -40,7 +41,7 @@ func WithHTTPHandler() Configuration {
 		taskHandler := http.NewTaskHandler(h.dependencies.TaskService)
 
 		r := h.HTTP.Group("/api")
-		r.Group("/tasks", taskHandler)
+		taskHandler.Routes(r.Group("/tasks"))
 
 		return
 	}
